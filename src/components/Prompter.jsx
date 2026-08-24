@@ -174,7 +174,7 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
         stripRef.current.style.background = ZONE_COLOR[zone]
       }
 
-      const pxPerSecBase = settings.fontSize * 2.4 * settings.baseSpeed
+      const pxPerSecBase = settings.fontSize * 1.2 * settings.baseSpeed
       el.scrollTop += pxPerSecBase * currentFactor * dt
 
       const maxScroll = el.scrollHeight - el.clientHeight
