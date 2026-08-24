@@ -89,6 +89,32 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
   const pausedRef = useRef(false)
   const exitTimer = useRef(null)
   const [exiting, setExiting] = useState(false)
+  const slowHoldRef = useRef(false)
+  const holdTimer = useRef(null)
+  const holdLatchRef = useRef(false)
+
+  function holdStart() {
+    holdLatchRef.current = false
+    clearTimeout(holdTimer.current)
+    holdTimer.current = setTimeout(() => {
+      holdLatchRef.current = true
+      slowHoldRef.current = true
+    }, 220)
+  }
+
+  function holdEnd() {
+    clearTimeout(holdTimer.current)
+    if (holdLatchRef.current) {
+      slowHoldRef.current = false
+    } else {
+      togglePlay()
+    }
+  }
+
+  function holdCancel() {
+    clearTimeout(holdTimer.current)
+    slowHoldRef.current = false
+  }
 
   const [phase, setPhase] = useState('countdown')
   const [countdown, setCountdown] = useState(3)
@@ -97,6 +123,14 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
   useEffect(() => {
     pausedRef.current = paused
   }, [paused])
+
+  useEffect(
+    () => () => {
+      clearTimeout(holdTimer.current)
+      clearTimeout(exitTimer.current)
+    },
+    [],
+  )
 
   useEffect(() => {
     document.documentElement.requestFullscreen?.().catch(() => {})
@@ -167,7 +201,7 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
       }
 
       const tempo = currentTempo(el.scrollTop)
-      const targetFactor = TEMPOS[tempo] ?? TEMPOS.normal
+      const targetFactor = (TEMPOS[tempo] ?? TEMPOS.normal) * (slowHoldRef.current ? 0.2 : 1)
       currentFactor += (targetFactor - currentFactor) * Math.min(1, dt * 5)
 
       const zone = currentFactor < 0.85 ? 'slow' : currentFactor > 1.15 ? 'fast' : 'normal'
@@ -256,7 +290,15 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
         )}
 
         {phase === 'playing' && !paused && (
-          <button onClick={togglePlay} className="absolute inset-0" aria-label="tap untuk pause/play" />
+          <button
+            onPointerDown={holdStart}
+            onPointerUp={holdEnd}
+            onPointerLeave={holdCancel}
+            onPointerCancel={holdCancel}
+            onContextMenu={(e) => e.preventDefault()}
+            className="absolute inset-0 [-webkit-touch-callout:none]"
+            aria-label="tap = pause/play, tahan = sangat lambat"
+          />
         )}
       </div>
 
