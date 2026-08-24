@@ -149,7 +149,7 @@ Wassalamualaikum wr. wb.
 2. **Tap layar** = pause / lanjut.
 3. Tombol **`−` / `+`** = ubah kecepatan di tengah jalan.
 4. **`A−` / `A+`** = ukuran font.
-5. Panel atas menampilkan **progress bar + sisa waktu + persentase** — berguna untuk pacing latihan. Panel kontrol hilang otomatis setelah ±2 detik; tap layar untuk memunculkan lagi.
+5. Panel atas menampilkan **progress bar + sisa waktu + persentase** — berguna untuk pacing latihan. Panel kontrol & info selalu tampil, tidak tersembunyi.
 6. **Keluar** = kembali ke editor.
 
 ---

@@ -91,7 +91,6 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
   const [phase, setPhase] = useState('countdown')
   const [countdown, setCountdown] = useState(3)
   const [paused, setPaused] = useState(false)
-  const [showControls, setShowControls] = useState(true)
 
   useEffect(() => {
     pausedRef.current = paused
@@ -192,17 +191,7 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
     return () => cancelAnimationFrame(raf)
   }, [phase, settings.fontSize, settings.baseSpeed, est.estimate])
 
-  const controlsTimer = useRef(null)
-  useEffect(() => {
-    clearTimeout(controlsTimer.current)
-    if (phase === 'playing' && !paused) {
-      controlsTimer.current = setTimeout(() => setShowControls(false), 2500)
-    }
-    return () => clearTimeout(controlsTimer.current)
-  }, [showControls, paused, phase])
-
   function togglePlay() {
-    setShowControls(true)
     setPaused((p) => !p)
   }
 
@@ -215,17 +204,13 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
     return () => document.removeEventListener('touchmove', handleTouchMove)
   }, [])
 
-  const vis = showControls ? '' : 'opacity-0 pointer-events-none'
-
   return (
     <div className="h-full flex flex-col bg-[#050508] select-none">
       <div className="h-1 bg-zinc-800 shrink-0">
         <div ref={progressElRef} className="h-full bg-indigo-500" style={{ width: '0%' }} />
       </div>
 
-      <div
-        className={`shrink-0 flex justify-between items-center px-3 py-1.5 text-xs text-zinc-400 transition-opacity duration-300 ${vis}`}
-      >
+      <div className="shrink-0 flex justify-between items-center px-3 py-1.5 text-xs text-zinc-400">
         <span ref={remainingElRef} className="tabular-nums">⏱ --</span>
         <span ref={pctElRef} className="tabular-nums">0%</span>
       </div>
@@ -269,7 +254,7 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
       </div>
 
       <div
-        className={`shrink-0 border-t border-zinc-800/60 px-2 py-2 flex items-center justify-around gap-1 transition-opacity duration-300 ${vis} pb-[max(env(safe-area-inset-bottom),0.5rem)]`}
+        className="shrink-0 border-t border-zinc-800/60 px-2 py-2 flex items-center justify-around gap-1 pb-[max(env(safe-area-inset-bottom),0.5rem)]"
       >
         <button
           onPointerDown={(e) => {
