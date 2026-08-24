@@ -87,6 +87,8 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
   const pctElRef = useRef(null)
   const stripRef = useRef(null)
   const pausedRef = useRef(false)
+  const exitTimer = useRef(null)
+  const [exiting, setExiting] = useState(false)
 
   const [phase, setPhase] = useState('countdown')
   const [countdown, setCountdown] = useState(3)
@@ -190,6 +192,11 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [phase, settings.fontSize, settings.baseSpeed, est.estimate])
+
+  function cancelExit() {
+    clearTimeout(exitTimer.current)
+    setExiting(false)
+  }
 
   function togglePlay() {
     setPaused((p) => !p)
@@ -298,11 +305,23 @@ export default function Prompter({ script, settings, onSpeed, onFontSize, onExit
         <button
           onPointerDown={(e) => {
             e.stopPropagation()
-            onExit()
+            setExiting(true)
+            exitTimer.current = setTimeout(onExit, 1200)
           }}
-          className="px-3 py-3 rounded-xl bg-rose-900/60 active:bg-rose-800 font-semibold text-sm"
+          onPointerUp={cancelExit}
+          onPointerLeave={cancelExit}
+          onPointerCancel={cancelExit}
+          onContextMenu={(e) => e.preventDefault()}
+          className="relative overflow-hidden px-3 py-3 rounded-xl bg-zinc-800 active:bg-zinc-700 font-semibold text-sm [-webkit-touch-callout:none]"
         >
-          Keluar
+          <span
+            className={`absolute inset-0 bg-rose-600 origin-left ${
+              exiting
+                ? 'transition-transform duration-[1200ms] ease-linear scale-x-100'
+                : 'transition-none scale-x-0'
+            }`}
+          />
+          <span className="relative">{exiting ? 'Keluar…' : 'Keluar'}</span>
         </button>
       </div>
     </div>

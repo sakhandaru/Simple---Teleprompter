@@ -150,7 +150,7 @@ Wassalamualaikum wr. wb.
 3. Tombol **`−` / `+`** = ubah kecepatan di tengah jalan.
 4. **`A−` / `A+`** = ukuran font.
 5. Panel atas menampilkan **progress bar + sisa waktu + persentase** — berguna untuk pacing latihan. Panel kontrol & info selalu tampil, tidak tersembunyi.
-6. **Keluar** = kembali ke editor.
+6. **Keluar** = tekan dan **tahan ±1 detik** sampai tombol terisi merah — sengaja dibuat begini supaya tidak terklik tak sengaja di tengah pidato.
 
 ---
 
